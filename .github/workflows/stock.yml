@@ -1,0 +1,25 @@
+name: Morning Stock Alarm
+
+on:
+  schedule:
+    # 깃허브 시간 밤 23:00 = 한국 시간 아침 08:00 (매일)
+    - cron: '0 23 * * *'
+  workflow_dispatch: # 내가 버튼을 누르면 언제든 바로 실행되게 하는 마법의 줄
+
+jobs:
+  run-stock-bot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 내 상자 열기
+        uses: actions/checkout@v4
+      - name: 로봇(파이썬) 준비시키기
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: 안경(부품) 장착하기
+        run: pip install -r requirements.txt
+      - name: 주식 분석하고 텔레그램 보내기
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python main.py
